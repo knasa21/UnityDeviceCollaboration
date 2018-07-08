@@ -10,7 +10,7 @@ public class LEDToggleGroup : MonoBehaviour
     public string   sendData;
     
     // 初期化
-    private void Awake()
+    private void Start()
     {
         TogglesSetting();
         TogglesValueCheck();

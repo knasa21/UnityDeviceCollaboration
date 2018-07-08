@@ -5,17 +5,26 @@ using System.Threading;
 
 public class SerialHandler : MonoBehaviour
 {
-    public delegate void SerialDataReceivedEventHandler(string message);
+    // String(シリアルで受け取った文字列)を引数とするデリゲート型の定義
+    public delegate void SerialDataReceivedEventHandler( string message );
+    // データを受け取った時に呼び出されるデリゲート
     public event SerialDataReceivedEventHandler OnDataReceived;
 
-    public string portName = "/dev/tty.usbmodem1421";
+    // シリアルポート(Windows)
+    public string portName = "COM3";
+    // シリアルポート(Mac)
+    //public string portName = "/dev/tty.usbmodem1421";
+
+    // ボーレート
     public int baudRate    = 9600;
 
     private SerialPort serialPort_;
     private Thread thread_;
     private bool isRunning_ = false;
 
+    // 受け取ったデータ
     private string message_;
+    // 新しいデータを受け取ったかのフラグ
     private bool isNewMessageReceived_ = false;
 
     void Awake()
@@ -25,8 +34,9 @@ public class SerialHandler : MonoBehaviour
 
     void Update()
     {
-        if (isNewMessageReceived_) {
-            OnDataReceived(message_);
+        // 新しいデータを受け取ったらデリゲートを介してメソッドを実行
+        if ( isNewMessageReceived_ ) {
+            OnDataReceived( message_ );
         }
     }
 
@@ -35,53 +45,59 @@ public class SerialHandler : MonoBehaviour
         Close();
     }
 
+    // ポート開放処理
     private void Open()
     {
-        serialPort_ = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
+        serialPort_ = new SerialPort( portName, baudRate, Parity.None, 8, StopBits.One );
+        serialPort_.ReadTimeout = 500;
         serialPort_.Open();
 
         isRunning_ = true;
 
-        thread_ = new Thread(Read);
+        // データの読み込みは別スレッドで動かす
+        thread_ = new Thread( Read );
         thread_.Start();
     }
 
+    // ボート閉鎖処理
     private void Close()
     {
         isRunning_ = false;
 
-        if (thread_ != null && thread_.IsAlive) {
+        if ( thread_ != null && thread_.IsAlive ) {
             thread_.Join();
         }
 
-        if (serialPort_ != null && serialPort_.IsOpen) {
+        if ( serialPort_ != null && serialPort_.IsOpen ) {
             serialPort_.Close();
             serialPort_.Dispose();
-            Debug.Log("SerialClose");
         }
     }
 
+    // データ受信処理
     private void Read()
     {
-        while (isRunning_ && serialPort_ != null && serialPort_.IsOpen) {
+        
+        while ( isRunning_ && serialPort_ != null && serialPort_.IsOpen ) {
+            // データを受け取っていたら値を保存する
             try {
                 if ( serialPort_.BytesToRead > 0 ) {
                     message_ = serialPort_.ReadLine();
-                Debug.Log(message_);
                     isNewMessageReceived_ = true;
                 }
-            } catch (System.Exception e) {
-                Debug.LogWarning(e.Message);
+            } catch ( System.Exception e ) {
+                Debug.LogWarning( e.Message );
             }
         }
     }
 
-    public void Write(string message)
+    // データ送信処理
+    public void Write( string message )
     {
         try {
-            serialPort_.Write(message);
-        } catch (System.Exception e) {
-            Debug.LogWarning(e.Message);
+            serialPort_.Write( message );
+        } catch ( System.Exception e ) {
+            Debug.LogWarning( e.Message );
         }
     }
 }
