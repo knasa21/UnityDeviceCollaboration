@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using System.IO.Ports;
 using System.Threading;
 
@@ -9,77 +8,79 @@ public class SerialHandler : MonoBehaviour
     public delegate void SerialDataReceivedEventHandler(string message);
     public event SerialDataReceivedEventHandler OnDataReceived;
 
-    public string portName = "COM5";
-    public int baudRate = 9600;
+    public string portName = "/dev/tty.usbmodem1421";
+    public int baudRate    = 9600;
 
-    private SerialPort serialPort;
-    private Thread thread;
-    private bool isRunning = false;
+    private SerialPort serialPort_;
+    private Thread thread_;
+    private bool isRunning_ = false;
 
-    private string message;
-    private bool isNewMessageReceived = false;
+    private string message_;
+    private bool isNewMessageReceived_ = false;
 
-    private void Awake()
+    void Awake()
     {
         Open();
     }
 
-    private void Update()
+    void Update()
     {
-        if (isNewMessageReceived) {
-            OnDataReceived(message);
+        if (isNewMessageReceived_) {
+            OnDataReceived(message_);
         }
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         Close();
     }
 
     private void Open()
     {
-        serialPort = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
-        serialPort.Open();
+        serialPort_ = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
+        serialPort_.Open();
 
-        isRunning = true;
+        isRunning_ = true;
 
-        thread = new Thread(Read);
-        thread.Start();
+        thread_ = new Thread(Read);
+        thread_.Start();
     }
 
     private void Close()
     {
-        isRunning = false;
+        isRunning_ = false;
 
-        if (thread != null && thread.IsAlive) {
-            thread.Join();
+        if (thread_ != null && thread_.IsAlive) {
+            thread_.Join();
         }
 
-        if(serialPort != null && serialPort.IsOpen) {
-            serialPort.Close();
-            serialPort.Dispose();
+        if (serialPort_ != null && serialPort_.IsOpen) {
+            serialPort_.Close();
+            serialPort_.Dispose();
+            Debug.Log("SerialClose");
         }
     }
 
     private void Read()
     {
-        while (isRunning && serialPort != null && serialPort.IsOpen) {
+        while (isRunning_ && serialPort_ != null && serialPort_.IsOpen) {
             try {
-                if (serialPort.BytesToRead > 0) {
-                    message = serialPort.ReadLine();
-                    isNewMessageReceived = true;
+                if ( serialPort_.BytesToRead > 0 ) {
+                    message_ = serialPort_.ReadLine();
+                Debug.Log(message_);
+                    isNewMessageReceived_ = true;
                 }
-            } catch(System.Exception e) {
+            } catch (System.Exception e) {
                 Debug.LogWarning(e.Message);
             }
         }
     }
 
-    private void Write(string message)
+    public void Write(string message)
     {
         try {
-            serialPort.Write(message);
-        } catch (System.Exception e){
+            serialPort_.Write(message);
+        } catch (System.Exception e) {
             Debug.LogWarning(e.Message);
         }
     }
