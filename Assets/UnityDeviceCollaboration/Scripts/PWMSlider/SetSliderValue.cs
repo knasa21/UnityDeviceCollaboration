@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
+// スライダーの値を表示
 public class ValueText: MonoBehaviour
 {
     public SerialHandler serial;

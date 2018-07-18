@@ -1,20 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
+// データ送信の処理
 public class SendData : MonoBehaviour
 {
+    // シリアルハンドラ
+    // 外から指定するためpublic
     public SerialHandler serial;
+
+    // UI Text
+    // 外から指定するためpublic
     public Text sendText;
-
-    void Start()
-    {
-    }
-
-    void Update()
-    {
-    }
 
     // テキストの送信
     public void SendText()

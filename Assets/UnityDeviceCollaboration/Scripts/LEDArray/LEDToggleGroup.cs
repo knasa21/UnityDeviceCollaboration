@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// LED点灯用Toggleグループの制御
 public class LEDToggleGroup : MonoBehaviour
 {
     public SerialHandler serial;
-    public Toggle[] ledToggles;
-    public string   sendData;
+
+    // Toggleは複数なので配列で持つ
+    Toggle[] ledToggles;
+
+    // 送信文字列
+    string   sendData;
     
     // 初期化
     private void Start()
@@ -79,5 +84,6 @@ public class LEDToggleGroup : MonoBehaviour
     private void LEDDataSend()
     {
         serial.Write( sendData );
+        Debug.Log( "Send data = " + sendData );
     }
 }

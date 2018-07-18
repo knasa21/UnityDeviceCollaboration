@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO.Ports;
 using System.Threading;
 
+// シリアル通信用ハンドラ
 public class SerialHandler : MonoBehaviour
 {
     // String(シリアルで受け取った文字列)を引数とするデリゲート型の定義
@@ -20,6 +21,8 @@ public class SerialHandler : MonoBehaviour
 
     private SerialPort serialPort_;
     private Thread thread_;
+
+    // 実行中かどうかのフラグ
     private bool isRunning_ = false;
 
     // 受け取ったデータ
@@ -27,6 +30,7 @@ public class SerialHandler : MonoBehaviour
     // 新しいデータを受け取ったかのフラグ
     private bool isNewMessageReceived_ = false;
 
+    // 起動時処理
     void Awake()
     {
         Open();
@@ -40,6 +44,7 @@ public class SerialHandler : MonoBehaviour
         }
     }
 
+    // 終了時処理
     void OnDestroy()
     {
         Close();
@@ -48,10 +53,12 @@ public class SerialHandler : MonoBehaviour
     // ポート開放処理
     private void Open()
     {
+        // ポートの設定と開放
         serialPort_ = new SerialPort( portName, baudRate, Parity.None, 8, StopBits.One );
         serialPort_.ReadTimeout = 500;
         serialPort_.Open();
 
+        // 実行中フラグをオン
         isRunning_ = true;
 
         // データの読み込みは別スレッドで動かす
@@ -64,10 +71,12 @@ public class SerialHandler : MonoBehaviour
     {
         isRunning_ = false;
 
+        // スレッドを止める
         if ( thread_ != null && thread_.IsAlive ) {
             thread_.Join();
         }
 
+        // ポート閉鎖
         if ( serialPort_ != null && serialPort_.IsOpen ) {
             serialPort_.Close();
             serialPort_.Dispose();

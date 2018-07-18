@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// PWM用の値を送信
 public class PWMValueSender : MonoBehaviour
 {
 
     public SerialHandler serial;
 
-    // PWMの値を送信
+    // PWMの値を送信（引数で値を受け取る）　
     public void SendPWMData( float pwm )
     {
         // PWMは0~255の間
