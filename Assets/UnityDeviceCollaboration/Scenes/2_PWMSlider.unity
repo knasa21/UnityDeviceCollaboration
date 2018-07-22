@@ -230,10 +230,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 414864973}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e9d919d832dbd847965e75b9b3d9062, type: 3}
+  m_Script: {fileID: 11500000, guid: ad4ca4826bf3f8f41bd61f61f7211d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serial: {fileID: 0}
   value: 0
 --- !u!114 &532943022 stripped
 MonoBehaviour:

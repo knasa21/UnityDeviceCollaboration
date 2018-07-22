@@ -60,6 +60,8 @@ public class LEDToggleGroup : MonoBehaviour
     private void ToggleChange( bool isChecked )
     {
         TogglesValueCheck();
+
+        LEDDataSend();
     }
 
     // Toggle配列から値の確認
@@ -76,8 +78,6 @@ public class LEDToggleGroup : MonoBehaviour
         // 終了フラグ
         sendData += "e";
 
-        // データ送信
-        LEDDataSend();
     }
 
     // LED設定データの送信
